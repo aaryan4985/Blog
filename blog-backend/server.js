@@ -8,6 +8,8 @@ require("dotenv").config();
 const authRoutes = require("./routes/auth"); // 💡 Import routes AFTER dotenv
 
 const app = express(); // ✅ DEFINE app BEFORE using it
+const postRoutes = require("./routes/post");
+app.use("/api/posts", postRoutes);
 
 app.use(cors());
 app.use(express.json());
