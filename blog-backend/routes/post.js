@@ -1,33 +1,41 @@
-// blog-backend/routes/post.js
 const express = require("express");
-const router = express.Router();
-const auth = require("../middleware/auth");
 const Post = require("../models/Post");
+const auth = require("../middleware/auth");
 
-// Create a post
-router.post("/", auth, async (req, res) => {
+const router = express.Router();
+
+// 📝 Edit Post
+router.put("/:id", auth, async (req, res) => {
   try {
-    const { title, content } = req.body;
-    const newPost = await Post.create({
-      title,
-      content,
-      author: req.user.username,
-    });
-    res.status(201).json(newPost);
+    const post = await Post.findById(req.params.id);
+
+    // Only the author can edit
+    if (post.author !== req.user.username)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    post.title = req.body.title || post.title;
+    post.content = req.body.content || post.content;
+    await post.save();
+
+    res.json({ message: "Post updated", post });
   } catch (err) {
-    res
-      .status(400)
-      .json({ error: "Post creation failed", details: err.message });
+    res.status(500).json({ error: "Error updating post" });
   }
 });
 
-// Get all posts
-router.get("/", async (req, res) => {
+// 🗑️ Delete Post
+router.delete("/:id", auth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
-    res.json(posts);
+    const post = await Post.findById(req.params.id);
+
+    // Only the author can delete
+    if (post.author !== req.user.username)
+      return res.status(403).json({ error: "Unauthorized" });
+
+    await post.remove();
+    res.json({ message: "Post deleted" });
   } catch (err) {
-    res.status(500).json({ error: "Failed to fetch posts" });
+    res.status(500).json({ error: "Error deleting post" });
   }
 });
 
