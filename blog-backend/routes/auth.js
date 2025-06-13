@@ -1,9 +1,15 @@
 // blog-backend/routes/auth.js
+
 const express = require("express");
 const router = express.Router();
-const { register, login } = require("../controllers/authController");
+const auth = require("../middleware/auth");
+const { register, login, getMe } = require("../controllers/authController");
 
+// Public Routes
 router.post("/register", register);
 router.post("/login", login);
+
+// 🔒 Protected Route
+router.get("/me", auth, getMe);
 
 module.exports = router;

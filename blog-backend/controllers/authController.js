@@ -20,6 +20,15 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password"); // 👈 fetch full user info
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   try {

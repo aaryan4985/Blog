@@ -2,6 +2,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
@@ -9,11 +10,13 @@ function App() {
       <nav className="flex gap-4 p-4 bg-gray-100">
         <Link to="/register">Register</Link>
         <Link to="/login">Login</Link>
+        <Link to="/dashboard">Dashboard</Link>
       </nav>
 
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </div>
   );
